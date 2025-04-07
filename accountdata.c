@@ -56,11 +56,11 @@ void saveaccounttofile(struct account* ahead)
 	struct account* i = ahead;
 	while (i != NULL)
 	{
-		fprintf(fp, "%s %d %s %s %d\n", i->user_name, i->type, i->password, i->phone_number,i->state);
+		fprintf(fp, "%s %d %s %s %d\n", i->user_name, i->type, i->password, i->phone_number, i->state);
 		i = i->next;
 	}
 	fclose(fp);
-}	
+}
 struct account* loadaccountfromfile()
 {
 	FILE* fp;
@@ -108,7 +108,7 @@ struct account* loadaccountfromfile()
 
 //用户名查重 可用返回0 不可用返回1
 int isUsernameTaken(struct account* ahead, char* user_name_input) {
-	if (ahead == NULL)return 0;		
+	if (ahead == NULL)return 0;
 	struct account* i = loadaccountfromfile();
 	while (i != NULL)
 	{
@@ -159,7 +159,7 @@ char* encryptpassword(int choice)
 	}
 	else { ; }
 
-	    while (1) {
+	while (1) {
 		ch = getch();
 		if (ch == '\r') {
 			password[i] = '\0';
@@ -210,30 +210,45 @@ void login_password(struct account* login_password_ap)
 			printf("\t\t==============================================\n");
 			printf("\t\t-----^-^-----------------------------^-^------\n");
 			printf("请输入选项前的序号:");
-			int choice1;
-			while (1) {
-				scanf("%d", &choice1);
-				if (choice1 != 1 && choice1 != 2 && choice1 != 3 && choice1 != 4 && choice1 != 5) {
-					printf("无效输入！请重新输入！\n");
+
+
+		
+				int choice1;
+				char ch;
+
+				while (1) {
+					
+
+					if (scanf("%d", &choice1) != 1) {  // 输入非整数时
+						printf("无效输入！请重新输入！\n");
+						while ((ch = getchar()) != '\n' && ch != EOF);  // 清空输入缓冲区
+					}
+					else if (choice1 < 1 || choice1 > 5) {  // 输入超出范围
+						printf("无效输入！请重新输入！\n");
+					}
+					else {
+						break;  // 合法输入，退出循环
+					}
 				}
-				else break;
-			}
+
+			
+
 			printf("请输入您的手机号码:");
 			for (int i = 0; i < 11; i++)
 			{
 				login_password_ap->phone_number[i] = getchar();
-				if (login_password_ap->phone_number[i] == '\n') {
+				if (login_password_ap->phone_number[i] != '1' && login_password_ap->phone_number[i] != '2' && login_password_ap->phone_number[i] != '3' && login_password_ap->phone_number[i] != '4' && login_password_ap->phone_number[i] != '5' && login_password_ap->phone_number[i] != '6' && login_password_ap->phone_number[i] != '7' && login_password_ap->phone_number[i] != '8' && login_password_ap->phone_number[i] != '9' && login_password_ap->phone_number[i] != '0')i--;
+				else if (login_password_ap->phone_number[i] == '\n') {
 					i--;
 				}
 			}
 			login_password_ap->phone_number[11] = '\0';
 			login_password_ap->type = choice1;
 			saveaccounttofile(ahead);
-			printf("注册成功！欢迎新用户！\n");
 			system("cls");
+			printf("注册成功！欢迎新用户！\n");
 			break;
 		}
 	}
 }
-
 

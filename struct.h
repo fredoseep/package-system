@@ -3,7 +3,7 @@
 #define STRUCT_H
 
 #include <stdbool.h>
-
+#include<time.h>
 enum user_type { administrator, bussiness, student, disabled, teacher, civilian };
 
 // 包裹状态枚举
@@ -13,6 +13,8 @@ enum state {
     already,         // 已取件
     returned,        // 退回
     mistaken,        // 误领
+    lose,            // 丢失
+    broken,          // 损坏
     wayto_others     // 在途（送往其他驿站）
 };
 
@@ -43,6 +45,7 @@ struct package
     char user_name[51];            // 用户ID
     enum state state;              // 当前状态
     struct package* pnext;         // 链表指针
+    time_t take_time;              // 包裹取走日期
 };
 struct account
 {
@@ -53,6 +56,16 @@ struct account
     bool state;//0为封禁，1为未封禁
     struct account* next;
 };
+struct message
+{
+    char user_name[51];
+    char note[300];
+    struct message* next;
+    struct message* pre;
+    time_t time;
+
+};
+
 struct account user_account;
 
 #endif

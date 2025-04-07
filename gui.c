@@ -18,6 +18,7 @@ char* input_username;
 char* input_tmp;
 struct account* login_ap;
 extern struct account user_account;
+struct account* loadaccountfromfile();
 
 /*void read()
 {
@@ -148,7 +149,7 @@ void signlog() {
 	for (; i < 102; )
 	{
 		char c = getch();
-		if (c == '\r' && i == 0) {//仅输入换行进入注册
+		if (c == '\r' && i == 0 && indicator == 0) {//仅输入换行进入注册
 			system("cls");
 			login();
 			return;//此处完善user_home之后换成对应用户主界面
@@ -213,8 +214,24 @@ void signlog() {
 	//printf("用户名：%s password:%s\n", input_username,input_password);
 	if (signin_match(input_username, input_password) == 1) {
 		system("cls");
-		printf("match");
-		user_home(input_username);
+		struct account* user = loadaccountfromfile();
+		while (user != NULL)
+		{
+			if (!(strcmp(user->user_name, input_username)))
+			{
+				break;
+			}
+			user = user->next;
+		}
+		if (user->state == 1) {
+			printf("登录成功");
+			user_home(input_username);
+		}
+		else {
+			system("cls");
+			printf("账号已被禁用");
+			signlog();
+		}
 	}
 	else if (signin_match(input_username, input_password) == 0) {
 		system("cls");
@@ -231,26 +248,31 @@ void signlog() {
 
 
 
-
 void login() {
 	printf("\n\n\n\n\n\n\n\n\n");
 	printf("\t\t                                              \n");
 	printf("\t\t==============================================\n");
 	printf("\t\t             欢迎使用菜鸟驿站                 \n");
 	printf("\t\t             请起一个用户名吧                 \n");
-	printf("\t\t                                              \n");
+	printf("\t\t          （用户名最多50个字符）              \n");
 	printf("\t\t                                              \n");
 	printf("\t\t                                              \n");
 	printf("\t\t==============================================\n");
 	printf("\t\t-----^-^-----------------------------^-^------\n");
 	printf("请输入用户名:");
-	char user_name_input[50];
+	char user_name_input[51];
 	while (1) {
 		scanf("%s", user_name_input);
 		getchar();
 		if (isUsernameTaken(ahead, user_name_input)) {
-			printf("用户名已存在");
-			continue;
+			system("cls");
+			printf("用户名已存在,换一个名字吧");
+			login();
+		}
+		else if(strlen(user_name_input) > 50) {
+			system("cls");
+			printf("用户名长度超过50 请重新输入");
+			login();
 		}
 		else
 		{
